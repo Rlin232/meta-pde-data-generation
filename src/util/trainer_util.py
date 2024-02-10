@@ -16,7 +16,7 @@ import os
 import shutil
 from .tensorboard_logger import Logger as TFLogger
 
-import flaxOptimizers
+# import flaxOptimizers
 from functools import partial
 
 import fenics as fa
@@ -39,6 +39,7 @@ def get_ground_truth_points(
     """Given a pdedef and list of pde parameters, sample points in the domain and
     evaluate the ground truth at those points."""
     fenics_functions = []
+    fenics_boundaries = []
     coefs = []
     coords = []
     keys = jax.random.split(key, len(pde_params_list))
@@ -52,7 +53,7 @@ def get_ground_truth_points(
         )
 
     for params, key in zip(pde_params_list, keys):
-        ground_truth = pde.solve_fenics(
+        ground_truth, bbtree = pde.solve_fenics(
             params, resolution=resolution, boundary_points=boundary_points
         )
         k1, k2 = jax.random.split(key)
@@ -72,7 +73,8 @@ def get_ground_truth_points(
         coords.append(fn_coords)
         ground_truth.set_allow_extrapolation(False)
         fenics_functions.append(ground_truth)
-    return fenics_functions, np.stack(coefs, axis=0), np.stack(coords, axis=0)
+        fenics_boundaries.append(bbtree)
+    return fenics_functions, np.stack(coefs, axis=0), np.stack(coords, axis=0), fenics_boundaries
 
 
 def save_fenics_solution(cache, fenics_function):

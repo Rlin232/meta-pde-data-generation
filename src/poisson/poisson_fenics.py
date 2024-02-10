@@ -88,7 +88,9 @@ def solve_fenics(params, boundary_points=64, resolution=12):
     )
     fa.solve(F == 0, u, bc)
 
-    return u
+    bmesh = fa.BoundaryMesh(mesh, "exterior")
+
+    return u, bmesh
 
 
 def main(argv):

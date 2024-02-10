@@ -1,3 +1,10 @@
 *.pyc
 **/ipynb
 **/gif
+slurm-*.out
+*.png
+*.vtu
+*.pvd
+*.pickle
+*.txt
+events.*
