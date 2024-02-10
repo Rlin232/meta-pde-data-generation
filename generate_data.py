@@ -75,8 +75,8 @@ if __name__ == "__main__":
         train_values_boundary = np.array([ground_truth(x) for x in train_points_boundary])[:, None]
         train_values_domain = np.array([ground_truth(x) for x in train_points_domain])[:, None]
 
-        source_terms_domain = vmap_source(train_points_domain, source_params)
-        source_terms_boundary = vmap_source(train_points_boundary, source_params)
+        train_source_terms_domain = vmap_source(train_points_domain, source_params)
+        train_source_terms_boundary = vmap_source(train_points_boundary, source_params)
 
         train_distances_boundary = np.array([0 for _ in train_points_boundary])[:, None]
         train_distances_domain = []
@@ -133,10 +133,16 @@ if __name__ == "__main__":
 
         data.append({"train_points_boundary": train_points_boundary, 
                      "train_values_boundary": train_values_boundary, 
+                     "train_distances_boundary": train_distances_boundary,
+                     "train_source_terms_boundary": train_source_terms_boundary,
                      "train_points_domain": train_points_domain, 
                      "train_values_domain": train_values_domain, 
+                     "train_distances_domain": train_distances_domain,
+                     "train_source_terms_domain": train_source_terms_domain,
                      "val_points": val_points, 
                      "val_values": val_values, 
+                     "val_distances": val_distances,
+                     "val_source_terms": val_source_terms,
                      "coefs": coefs
                      })
     

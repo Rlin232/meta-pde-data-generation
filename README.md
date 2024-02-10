@@ -1,4 +1,7 @@
-# meta-PDE
+# Directions
+To generate data, run the `job.sh` script. This script will use 8 random seeds to generate data and store the visualizations in the topmost directory. Moreover, it will store the data in a pytorch object. 
+
+# meta-PDE (obtained from https://github.com/rmojgani/meta-pde)
 meta-learning initializations for mesh-free amortization of PDE solving  
 [paper](https://arxiv.org/abs/2211.01604)
 
