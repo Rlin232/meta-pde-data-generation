@@ -40,14 +40,14 @@ def loss_fn(potential_fn, points, params):
 
 
 @jax.jit
-def sample_params(key):
+def sample_params(key, seed=0):
     if FLAGS.fixed_num_pdes is not None:
         #key = jax.random.PRNGKey(
         #    jax.random.randint(
         #        key, (1,), np.array([0]), np.array([FLAGS.fixed_num_pdes])
         #    )[0]
         #)
-        key = jax.random.PRNGKey(FLAGS.seed)
+        key = jax.random.PRNGKey(seed)
 
     k1, k2, k3 = jax.random.split(key, 3)
 
