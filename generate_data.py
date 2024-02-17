@@ -79,43 +79,59 @@ if __name__ == "__main__":
         train_source_terms_boundary = vmap_source(train_points_boundary, source_params)
 
         train_distances_boundary = np.array([0 for _ in train_points_boundary])[:, None]
+        train_bc_boundary = train_values_boundary
+
         train_distances_domain = []
+        train_bc_domain = []
+
         for point in train_points_domain:
             x = point[0]
             y = point[1]
 
             distances = np.sqrt(np.square(boundary_mesh.coordinates()[:,0] - x) + np.square(boundary_mesh.coordinates()[:,1] - y))
-            train_distances_domain.append(np.min(distances))
+            index = distances.index(np.min(distances))
+            
+            min_distance = np.min(distances)
+            min_index = np.where(distances == min_distance)[0]
+            
+            closest_boundary_point = (boundary_mesh.coordinates()[min_index,0], boundary_mesh.coordinates()[min_index,1])
+
+            train_distances_domain.append(min_distance)
+            train_bc_domain.append(ground_truth(closest_boundary_point))
+        train_bc_domain = np.array(train_bc_domain)[:,None]
         train_distances_domain = np.array(train_distances_domain)[:,None]
-
-        ground_truth.set_allow_extrapolation(False)
-
 
         val_points = coords[i]
         # Fenics_vals comes in the form [[val1], [val2], [val3], ...]
         val_values = fenics_vals[i].flatten()
         val_distances = []
+        val_bc = []
         for point in val_points:
             x = point[0]
             y = point[1]
 
             distances = np.sqrt(np.square(boundary_mesh.coordinates()[:,0] - x) + np.square(boundary_mesh.coordinates()[:,1] - y))
+            index = distances.index(np.min(distances))
+            
+            min_distance = np.min(distances)
+            min_index = np.where(distances == min_distance)[0]
+            
+            closest_boundary_point = (boundary_mesh.coordinates()[min_index,0], boundary_mesh.coordinates()[min_index,1])
+
             val_distances.append(np.min(distances))
+            val_bc.append(ground_truth(closest_boundary_point))
+        val_distances = np.array(val_distances)[:,None]
+        val_bc = np.array(val_bc)[:,None]
         val_source_terms = vmap_source(val_points, source_params)
 
-        point = train_points_domain[0]
-        x = point[0]
-        y = point[1]
-        distances = np.sqrt(np.square(boundary_mesh.coordinates()[:,0] - x) + np.square(boundary_mesh.coordinates()[:,1] - y))
+        ground_truth.set_allow_extrapolation(False)
 
         # Plot and save ground truth visualization
         pde.plot_solution(ground_truth, params_list[i])
 
         # Code to visually check distance calculation 
         # plt.plot(x,y,'ro') 
-
         # ax = plt.gca()
-
         # circle = Circle(point, np.min(distances), edgecolor='r', facecolor='none')
         # ax.add_patch(circle)
 
@@ -135,10 +151,12 @@ if __name__ == "__main__":
                      "train_values_boundary": train_values_boundary, 
                      "train_distances_boundary": train_distances_boundary,
                      "train_source_terms_boundary": train_source_terms_boundary,
+                     "train_bc_boundary": train_bc_boundary,
                      "train_points_domain": train_points_domain, 
                      "train_values_domain": train_values_domain, 
                      "train_distances_domain": train_distances_domain,
                      "train_source_terms_domain": train_source_terms_domain,
+                     "train_bc_domain": train_bc_domain,
                      "val_points": val_points, 
                      "val_values": val_values, 
                      "val_distances": val_distances,

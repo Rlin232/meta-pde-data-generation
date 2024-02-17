@@ -58,6 +58,10 @@ def sample_params(key):
 
     source_params = jax.random.normal(k1, shape=(2, 3,))
 
+    # bc_params = FLAGS.bc_scale * jax.random.uniform(
+    #     k2, minval=0.0, maxval=0.0, shape=(5,)
+    # )
+
     bc_params = FLAGS.bc_scale * jax.random.uniform(
         k2, minval=-1.0, maxval=1.0, shape=(5,)
     )
