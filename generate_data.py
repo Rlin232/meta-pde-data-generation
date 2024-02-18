@@ -31,6 +31,7 @@ FLAGS = flags.FLAGS
 if __name__ == "__main__":
     FLAGS.fixed_num_pdes = 1
     FLAGS(sys.argv) 
+    data = []
     for i in range(FLAGS.n_eval):        
         key, subkey = jax.random.split(jax.random.PRNGKey(0))
         key, gt_key, gt_points_key = jax.random.split(key, 3)
@@ -47,7 +48,6 @@ if __name__ == "__main__":
         )
 
         N = len(fenics_functions)
-        data = []
         keys = jax.random.split(gt_points_key, len(params_list))
 
         # Extract keys, ground truth, and parameters for PDE
@@ -61,19 +61,19 @@ if __name__ == "__main__":
         c1, c2 = geo_params
         r0 = 1.0
         beta_i, gamma_i = source_params
-        print(source_params)
+        # print(source_params)
         b_i = bc_params
 
         # Obtain datapoints and validation points
         train_points_boundary, train_points_domain = pde.sample_points(key_i, FLAGS.outer_points, params)
         ground_truth.set_allow_extrapolation(True)
-        train_values_boundary = np.array([ground_truth(x) for x in train_points_boundary])[:, None]
-        train_values_domain = np.array([ground_truth(x) for x in train_points_domain])[:, None]
+        train_values_boundary = np.array([ground_truth(x) for x in train_points_boundary])
+        train_values_domain = np.array([ground_truth(x) for x in train_points_domain])
 
         train_source_terms_domain = vmap_source(train_points_domain, source_params)
         train_source_terms_boundary = vmap_source(train_points_boundary, source_params)
 
-        train_distances_boundary = np.array([0 for _ in train_points_boundary])[:, None]
+        train_distances_boundary = np.array([0 for _ in train_points_boundary])
         train_bc_boundary = train_values_boundary
 
         train_distances_domain = []
