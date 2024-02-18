@@ -92,8 +92,8 @@ if __name__ == "__main__":
 
             train_distances_domain.append(min_distance)
             train_bc_domain.append(ground_truth(closest_boundary_point))
-        train_bc_domain = np.array(train_bc_domain)[:,None]
-        train_distances_domain = np.array(train_distances_domain)[:,None]
+        train_bc_domain = np.array(train_bc_domain)
+        train_distances_domain = np.array(train_distances_domain)
 
         val_points = coords[0]
         # Fenics_vals comes in the form [[val1], [val2], [val3], ...]
@@ -113,8 +113,8 @@ if __name__ == "__main__":
 
             val_distances.append(np.min(distances))
             val_bc.append(ground_truth(closest_boundary_point))
-        val_distances = np.array(val_distances)[:,None]
-        val_bc = np.array(val_bc)[:,None]
+        val_distances = np.array(val_distances)
+        val_bc = np.array(val_bc)
         val_source_terms = vmap_source(val_points, source_params)
 
         ground_truth.set_allow_extrapolation(False)
